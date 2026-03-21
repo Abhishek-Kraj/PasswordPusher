@@ -82,6 +82,7 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   config.hosts << "lvh.me"
+  config.hosts << "oss.localhost"
 
   # The list of trusted proxies from which we will accept proxy related headers.
   config.action_dispatch.trusted_proxies = [
