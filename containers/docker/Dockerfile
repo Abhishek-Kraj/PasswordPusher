@@ -35,8 +35,9 @@ WORKDIR ${APP_ROOT}
 # Copy dependency files first for better layer caching
 COPY Gemfile Gemfile.lock ./
 
-# Install Ruby dependencies - this layer will be cached unless Gemfile changes
+# Resolve any new gems added to Gemfile, then install in deployment mode
 RUN bundle lock --update \
+    && cp Gemfile.lock /tmp/Gemfile.lock.resolved \
     && bundle config set without "${BUNDLE_WITHOUT}" \
     && bundle config set deployment "${BUNDLE_DEPLOYMENT}" \
     && bundle install \
@@ -53,6 +54,9 @@ RUN yarn install --frozen-lockfile
 
 # Copy source code - this should be done as late as possible
 COPY ./ ${APP_ROOT}/
+
+# Restore the resolved Gemfile.lock (COPY above overwrites it with the repo version)
+RUN cp /tmp/Gemfile.lock.resolved Gemfile.lock
 
 # Build assets - this layer will be rebuilt when source code changes
 RUN yarn build
