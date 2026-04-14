@@ -295,6 +295,29 @@ sso:
   azure_tenant_id: <%= ENV.fetch("PWP__SSO__AZURE_TENANT_ID", "common") %>
 
 # =============================================================================
+# SCIM 2.0 User Provisioning (Azure Entra ID User Sync)
+# =============================================================================
+# Enable automatic user provisioning from Azure Entra ID via SCIM 2.0.
+# When enabled, Azure can automatically create, update, and deactivate
+# user accounts in PasswordPusher.
+#
+# To configure in Azure:
+# 1. In Azure Portal > Enterprise Applications > your app > Provisioning
+# 2. Set Provisioning Mode to "Automatic"
+# 3. Set Tenant URL to: https://YOUR_DOMAIN/scim/v2
+# 4. Set Secret Token to your bearer token (set below)
+# 5. Click "Test Connection" to verify
+# 6. Set scope and start provisioning
+#
+# Environment variable overrides:
+# PWP__SCIM__ENABLED='true'
+# PWP__SCIM__BEARER_TOKEN='your-secure-random-token'
+
+scim:
+  enabled: <%= ENV.fetch("PWP__SCIM__ENABLED", false) %>
+  bearer_token: <%= ENV.fetch("PWP__SCIM__BEARER_TOKEN", "") %>
+
+# =============================================================================
 # Mail (required when logins are enabled)
 # =============================================================================
 

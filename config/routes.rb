@@ -36,5 +36,18 @@ Rails.application.routes.draw do
   # JSON health check endpoint with database connectivity verification
   get "/healthz" => "health#healthz"
 
+  # SCIM 2.0 provisioning endpoint for Azure Entra ID user sync
+  if defined?(Scimitar) && Settings.respond_to?(:scim) && Settings.scim&.enabled
+    namespace :scim_v2, path: "scim/v2" do
+      get "ServiceProviderConfig", to: "service_provider_configurations#show"
+      get "Schemas", to: "schemas#index"
+      get "Schemas/:id", to: "schemas#show"
+      get "ResourceTypes", to: "resource_types#index"
+      get "ResourceTypes/:id", to: "resource_types#show"
+
+      resources :users, controller: :users
+    end
+  end
+
   post "/csp-violation-report", to: "csp_reports#create"
 end
