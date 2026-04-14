@@ -4,8 +4,17 @@ class User < ApplicationRecord
   include Pwpush::TokenAuthentication
   include User::TotpAuthentication
 
-  SSO_ENABLED = Settings.respond_to?(:sso) && ActiveModel::Type::Boolean.new.cast(Settings.sso&.enabled)
-  SCIM_ENABLED = Settings.respond_to?(:scim) && ActiveModel::Type::Boolean.new.cast(Settings.scim&.enabled)
+  SSO_ENABLED = begin
+    AppSetting.sso_enabled?
+  rescue
+    ActiveModel::Type::Boolean.new.cast(ENV.fetch("PWP__SSO__ENABLED", false))
+  end
+
+  SCIM_ENABLED = begin
+    AppSetting.scim_enabled?
+  rescue
+    ActiveModel::Type::Boolean.new.cast(ENV.fetch("PWP__SCIM__ENABLED", false))
+  end
 
   if defined?(Scimitar) && SCIM_ENABLED
     include Scimitar::Resources::Mixin

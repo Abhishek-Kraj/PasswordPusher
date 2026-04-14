@@ -11,6 +11,18 @@
   </li>
 <% end %>
 
+<% if flash[:notice] %>
+  <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+    <div class="d-flex align-items-center">
+      <svg class="me-2 flex-shrink-0" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <%= flash[:notice] %>
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% end %>
+
 <!-- Overview Stats -->
 <div class="row g-4 mb-4">
   <div class="col-md-3">
@@ -73,41 +85,60 @@
     </div>
   </div>
   <div class="card-body">
-    <% if @sso_enabled %>
-      <div class="alert alert-success d-flex align-items-start mb-4">
-        <svg class="text-success me-3 mt-1 flex-shrink-0" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        <div>
-          <div class="fw-semibold"><%= _("SSO is active") %></div>
-          <div class="small"><%= _("Users can sign in with their Microsoft account. A 'Sign in with Microsoft' button is shown on the login page.") %></div>
-        </div>
+    <div class="alert alert-warning d-flex align-items-start mb-4">
+      <svg class="text-warning me-3 mt-1 flex-shrink-0" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+      </svg>
+      <div>
+        <div class="fw-semibold"><%= _("Restart required") %></div>
+        <div class="small"><%= _("SSO settings are loaded at application startup. After saving changes, the application must be restarted for them to take effect.") %></div>
       </div>
+    </div>
 
+    <%= form_tag update_sso_admin_integrations_path, method: :patch, class: "needs-validation" do %>
       <div class="row g-4">
         <div class="col-md-6">
-          <h6 class="fw-semibold text-dark mb-3"><%= _("Current Configuration") %></h6>
-          <table class="table table-sm">
-            <tbody>
-              <tr>
-                <td class="text-muted fw-medium" style="width: 140px;"><%= _("Tenant ID") %></td>
-                <td><code><%= Settings.sso.azure_tenant_id.presence || "common" %></code></td>
-              </tr>
-              <tr>
-                <td class="text-muted fw-medium"><%= _("Client ID") %></td>
-                <td><code><%= Settings.sso.azure_client_id.to_s.truncate(20, omission: "...****") %></code></td>
-              </tr>
-              <tr>
-                <td class="text-muted fw-medium"><%= _("Client Secret") %></td>
-                <td><code>••••••••••••</code></td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="mb-4">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="sso_enabled" name="sso_enabled" value="1" <%= "checked" if @sso_enabled %>>
+              <label class="form-check-label fw-semibold" for="sso_enabled"><%= _("Enable SSO") %></label>
+            </div>
+            <p class="text-muted small mt-1 mb-0"><%= _("Show 'Sign in with Microsoft' button on the login page") %></p>
+          </div>
+
+          <div class="mb-3">
+            <label for="sso_azure_tenant_id" class="form-label fw-medium small"><%= _("Tenant ID") %></label>
+            <input type="text" class="form-control form-control-sm font-monospace" id="sso_azure_tenant_id" name="sso_azure_tenant_id"
+              value="<%= @sso_tenant_id %>" placeholder="common">
+            <div class="form-text"><%= _("Your Azure AD Directory (tenant) ID, or 'common' for multi-tenant") %></div>
+          </div>
+
+          <div class="mb-3">
+            <label for="sso_azure_client_id" class="form-label fw-medium small"><%= _("Client ID") %></label>
+            <input type="text" class="form-control form-control-sm font-monospace" id="sso_azure_client_id" name="sso_azure_client_id"
+              value="<%= @sso_client_id %>" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+            <div class="form-text"><%= _("Application (client) ID from Azure App Registration") %></div>
+          </div>
+
+          <div class="mb-3">
+            <label for="sso_azure_client_secret" class="form-label fw-medium small"><%= _("Client Secret") %></label>
+            <input type="password" class="form-control form-control-sm font-monospace" id="sso_azure_client_secret" name="sso_azure_client_secret"
+              placeholder="<%= @sso_enabled ? _("••••••••  (leave blank to keep current)") : _("Enter client secret") %>">
+            <div class="form-text"><%= _("Client secret value from Certificates & Secrets. Leave blank to keep the current value.") %></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            <svg class="me-1" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <%= _("Save SSO Settings") %>
+          </button>
         </div>
+
         <div class="col-md-6">
           <h6 class="fw-semibold text-dark mb-3"><%= _("Redirect URI") %></h6>
-          <p class="small text-muted mb-2"><%= _("Set this in your Azure App Registration:") %></p>
-          <div class="input-group">
+          <p class="small text-muted mb-2"><%= _("Set this in your Azure App Registration under Authentication → Redirect URIs:") %></p>
+          <div class="input-group mb-4">
             <input type="text" class="form-control form-control-sm font-monospace bg-light" readonly
               value="<%= "#{Settings.host_protocol || 'https'}://#{Settings.host_domain || request.host}/users/auth/microsoft_graph/callback" %>"
               id="sso-redirect-uri">
@@ -116,35 +147,18 @@
               <%= _("Copy") %>
             </button>
           </div>
-        </div>
-      </div>
-    <% else %>
-      <div class="alert alert-light border d-flex align-items-start mb-4">
-        <svg class="text-muted me-3 mt-1 flex-shrink-0" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        <div>
-          <div class="fw-semibold"><%= _("SSO is not configured") %></div>
-          <div class="small text-muted"><%= _("Set the following environment variables to enable Microsoft Entra ID SSO:") %></div>
-        </div>
-      </div>
 
-      <h6 class="fw-semibold text-dark mb-3"><%= _("Setup Instructions") %></h6>
-      <div class="bg-light rounded-3 p-3 mb-3">
-        <ol class="mb-0 small">
-          <li class="mb-2"><%= _("Go to <strong>Azure Portal</strong> → <strong>App Registrations</strong> → <strong>New Registration</strong>").html_safe %></li>
-          <li class="mb-2"><%= _("Set Redirect URI to:") %> <code><%= "#{Settings.host_protocol || 'https'}://YOUR_DOMAIN/users/auth/microsoft_graph/callback" %></code></li>
-          <li class="mb-2"><%= _("Copy the Application (Client) ID and Directory (Tenant) ID") %></li>
-          <li class="mb-2"><%= _("Go to <strong>Certificates & Secrets</strong> → <strong>New client secret</strong>").html_safe %></li>
-          <li><%= _("Set environment variables:") %></li>
-        </ol>
-      </div>
-
-      <div class="bg-dark text-light rounded-3 p-3 font-monospace small">
-        <div>PWP__SSO__ENABLED=true</div>
-        <div>PWP__SSO__AZURE_CLIENT_ID=&lt;your-client-id&gt;</div>
-        <div>PWP__SSO__AZURE_CLIENT_SECRET=&lt;your-client-secret&gt;</div>
-        <div>PWP__SSO__AZURE_TENANT_ID=&lt;your-tenant-id&gt;</div>
+          <h6 class="fw-semibold text-dark mb-3"><%= _("Setup Instructions") %></h6>
+          <div class="bg-light rounded-3 p-3">
+            <ol class="mb-0 small">
+              <li class="mb-2"><%= _("Go to <strong>Azure Portal</strong> → <strong>App Registrations</strong> → <strong>New Registration</strong>").html_safe %></li>
+              <li class="mb-2"><%= _("Add the Redirect URI shown above") %></li>
+              <li class="mb-2"><%= _("Copy the <strong>Application (Client) ID</strong> and <strong>Directory (Tenant) ID</strong>").html_safe %></li>
+              <li class="mb-2"><%= _("Go to <strong>Certificates & Secrets</strong> → <strong>New client secret</strong>").html_safe %></li>
+              <li><%= _("Enter the values in the form and click Save") %></li>
+            </ol>
+          </div>
+        </div>
       </div>
     <% end %>
   </div>
@@ -173,22 +187,44 @@
     </div>
   </div>
   <div class="card-body">
-    <% if @scim_enabled %>
-      <div class="alert alert-success d-flex align-items-start mb-4">
-        <svg class="text-success me-3 mt-1 flex-shrink-0" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        <div>
-          <div class="fw-semibold"><%= _("SCIM provisioning is active") %></div>
-          <div class="small"><%= _("Azure Entra ID can automatically create, update, and deactivate user accounts.") %></div>
-        </div>
-      </div>
-
+    <%= form_tag update_scim_admin_integrations_path, method: :patch do %>
       <div class="row g-4">
+        <div class="col-md-6">
+          <div class="mb-4">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="scim_enabled" name="scim_enabled" value="1" <%= "checked" if @scim_enabled %>>
+              <label class="form-check-label fw-semibold" for="scim_enabled"><%= _("Enable SCIM Provisioning") %></label>
+            </div>
+            <p class="text-muted small mt-1 mb-0"><%= _("Allow Azure Entra ID to automatically manage user accounts") %></p>
+          </div>
+
+          <div class="mb-3">
+            <label for="scim_bearer_token" class="form-label fw-medium small"><%= _("Bearer Token") %></label>
+            <div class="input-group">
+              <input type="password" class="form-control form-control-sm font-monospace" id="scim_bearer_token" name="scim_bearer_token"
+                placeholder="<%= @scim_bearer_token.present? ? _("••••••••  (leave blank to keep current)") : _("Enter or generate a token") %>">
+              <button class="btn btn-outline-secondary btn-sm" type="button"
+                onclick="const el=document.getElementById('scim_bearer_token'); el.type=el.type==='password'?'text':'password';">
+                <%= _("Show") %>
+              </button>
+            </div>
+            <div class="form-text"><%= _("Enter this as Secret Token in Azure Provisioning settings. Leave blank to keep the current value.") %></div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+              <svg class="me-1" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <%= _("Save SCIM Settings") %>
+            </button>
+          </div>
+        </div>
+
         <div class="col-md-6">
           <h6 class="fw-semibold text-dark mb-3"><%= _("SCIM Endpoint") %></h6>
           <p class="small text-muted mb-2"><%= _("Enter this as Tenant URL in Azure Provisioning:") %></p>
-          <div class="input-group mb-3">
+          <div class="input-group mb-4">
             <input type="text" class="form-control form-control-sm font-monospace bg-light" readonly
               value="<%= "#{Settings.host_protocol || 'https'}://#{Settings.host_domain || request.host}/scim/v2" %>"
               id="scim-endpoint">
@@ -198,71 +234,69 @@
             </button>
           </div>
 
-          <h6 class="fw-semibold text-dark mb-3"><%= _("Bearer Token") %></h6>
-          <p class="small text-muted mb-2"><%= _("Enter this as Secret Token in Azure Provisioning:") %></p>
-          <div class="input-group">
-            <input type="password" class="form-control form-control-sm font-monospace bg-light" readonly
-              value="<%= Settings.scim.bearer_token %>"
-              id="scim-token">
-            <button class="btn btn-outline-secondary btn-sm" type="button"
-              onclick="const el=document.getElementById('scim-token'); el.type=el.type==='password'?'text':'password'; this.textContent=el.type==='password'?'Show':'Hide';">
-              <%= _("Show") %>
-            </button>
-            <button class="btn btn-outline-secondary btn-sm" type="button"
-              onclick="navigator.clipboard.writeText(document.getElementById('scim-token').value); this.textContent='Copied!'; setTimeout(() => this.textContent='Copy', 2000);">
-              <%= _("Copy") %>
-            </button>
-          </div>
+          <% if @scim_bearer_token.present? %>
+            <h6 class="fw-semibold text-dark mb-3"><%= _("Current Token") %></h6>
+            <div class="input-group mb-3">
+              <input type="password" class="form-control form-control-sm font-monospace bg-light" readonly
+                value="<%= @scim_bearer_token %>" id="scim-token-display">
+              <button class="btn btn-outline-secondary btn-sm" type="button"
+                onclick="const el=document.getElementById('scim-token-display'); el.type=el.type==='password'?'text':'password'; this.textContent=el.type==='password'?'Show':'Hide';">
+                <%= _("Show") %>
+              </button>
+              <button class="btn btn-outline-secondary btn-sm" type="button"
+                onclick="navigator.clipboard.writeText(document.getElementById('scim-token-display').value); this.textContent='Copied!'; setTimeout(() => this.textContent='Copy', 2000);">
+                <%= _("Copy") %>
+              </button>
+            </div>
+          <% end %>
+
+          <%= button_to regenerate_scim_token_admin_integrations_path,
+              method: :post,
+              class: "btn btn-outline-warning btn-sm",
+              data: { turbo_confirm: _("Are you sure? This will invalidate the current token. You'll need to update it in Azure Entra ID.") } do %>
+            <svg class="me-1" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+            <%= _("Regenerate Token") %>
+          <% end %>
         </div>
-
-        <div class="col-md-6">
-          <h6 class="fw-semibold text-dark mb-3"><%= _("Azure Configuration Steps") %></h6>
-          <div class="bg-light rounded-3 p-3">
-            <ol class="mb-0 small">
-              <li class="mb-2"><%= _("Go to <strong>Azure Portal</strong> → <strong>Enterprise Applications</strong>").html_safe %></li>
-              <li class="mb-2"><%= _("Select your app → <strong>Provisioning</strong>").html_safe %></li>
-              <li class="mb-2"><%= _("Set Provisioning Mode to <strong>Automatic</strong>").html_safe %></li>
-              <li class="mb-2"><%= _("Enter the <strong>Tenant URL</strong> and <strong>Secret Token</strong> from the left").html_safe %></li>
-              <li class="mb-2"><%= _("Click <strong>Test Connection</strong> to verify").html_safe %></li>
-              <li><%= _("Click <strong>Start Provisioning</strong>").html_safe %></li>
-            </ol>
-          </div>
-
-          <div class="mt-3">
-            <h6 class="fw-semibold text-dark mb-2"><%= _("What happens:") %></h6>
-            <ul class="small text-muted mb-0">
-              <li><%= _("Assign user in Azure → user created here automatically") %></li>
-              <li><%= _("Update user in Azure → name/email synced here") %></li>
-              <li><%= _("Unassign user → account deactivated (can't login)") %></li>
-              <li><%= _("Azure syncs every ~40 minutes automatically") %></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    <% else %>
-      <div class="alert alert-light border d-flex align-items-start mb-4">
-        <svg class="text-muted me-3 mt-1 flex-shrink-0" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        <div>
-          <div class="fw-semibold"><%= _("SCIM provisioning is not configured") %></div>
-          <div class="small text-muted"><%= _("Set the following environment variables to enable automatic user provisioning:") %></div>
-        </div>
-      </div>
-
-      <div class="bg-dark text-light rounded-3 p-3 font-monospace small mb-3">
-        <div>PWP__SCIM__ENABLED=true</div>
-        <div>PWP__SCIM__BEARER_TOKEN=$(openssl rand -hex 32)</div>
-      </div>
-
-      <div class="alert alert-info small">
-        <strong><%= _("Tip:") %></strong> <%= _("SCIM provisioning works best with SSO enabled. Users provisioned via SCIM can log in using Microsoft SSO without needing a local password.") %>
       </div>
     <% end %>
+
+    <hr class="my-4">
+
+    <div class="row g-4">
+      <div class="col-md-6">
+        <h6 class="fw-semibold text-dark mb-3"><%= _("Azure Configuration Steps") %></h6>
+        <div class="bg-light rounded-3 p-3">
+          <ol class="mb-0 small">
+            <li class="mb-2"><%= _("Go to <strong>Azure Portal</strong> → <strong>Enterprise Applications</strong>").html_safe %></li>
+            <li class="mb-2"><%= _("Select your app → <strong>Provisioning</strong>").html_safe %></li>
+            <li class="mb-2"><%= _("Set Provisioning Mode to <strong>Automatic</strong>").html_safe %></li>
+            <li class="mb-2"><%= _("Enter the <strong>Tenant URL</strong> and <strong>Secret Token</strong> from above").html_safe %></li>
+            <li class="mb-2"><%= _("Click <strong>Test Connection</strong> to verify").html_safe %></li>
+            <li><%= _("Click <strong>Start Provisioning</strong>").html_safe %></li>
+          </ol>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h6 class="fw-semibold text-dark mb-2"><%= _("What happens:") %></h6>
+        <ul class="small text-muted mb-0">
+          <li><%= _("Assign user in Azure → user created here automatically") %></li>
+          <li><%= _("Update user in Azure → name/email synced here") %></li>
+          <li><%= _("Unassign user → account deactivated (can't login)") %></li>
+          <li><%= _("Azure syncs every ~40 minutes automatically") %></li>
+        </ul>
+
+        <div class="alert alert-info small mt-3 mb-0">
+          <strong><%= _("Tip:") %></strong> <%= _("SCIM provisioning works best with SSO enabled. Users provisioned via SCIM can log in using Microsoft SSO without needing a local password.") %>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- SCIM Available Endpoints -->
+<!-- SCIM API Reference -->
 <div class="card shadow-sm">
   <div class="card-header border-bottom">
     <h2 class="h5 fw-semibold text-dark mb-0"><%= _("SCIM 2.0 API Reference") %></h2>

@@ -37,7 +37,8 @@ Rails.application.routes.draw do
   get "/healthz" => "health#healthz"
 
   # SCIM 2.0 provisioning endpoint for Azure Entra ID user sync
-  if defined?(Scimitar) && Settings.respond_to?(:scim) && ActiveModel::Type::Boolean.new.cast(Settings.scim&.enabled)
+  _scim_on = begin; AppSetting.scim_enabled?; rescue; ActiveModel::Type::Boolean.new.cast(ENV.fetch("PWP__SCIM__ENABLED", false)); end
+  if defined?(Scimitar) && _scim_on
     namespace :scim_v2, path: "scim/v2" do
       get "ServiceProviderConfig", to: "service_provider_configurations#show"
       get "Schemas", to: "schemas#index"

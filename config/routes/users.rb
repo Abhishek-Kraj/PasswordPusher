@@ -11,7 +11,8 @@ devise_controllers = {
   confirmations: "users/confirmations",
   registrations: "users/registrations"
 }
-devise_controllers[:omniauth_callbacks] = "users/omniauth_callbacks" if Settings.respond_to?(:sso) && ActiveModel::Type::Boolean.new.cast(Settings.sso&.enabled)
+_sso_on = begin; AppSetting.sso_enabled?; rescue; ActiveModel::Type::Boolean.new.cast(ENV.fetch("PWP__SSO__ENABLED", false)); end
+devise_controllers[:omniauth_callbacks] = "users/omniauth_callbacks" if _sso_on
 
 devise_for :users, skip: :registrations, controllers: devise_controllers
 

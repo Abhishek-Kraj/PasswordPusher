@@ -274,12 +274,24 @@ Devise.setup do |config|
   config.sign_out_via = :delete
 
   # ==> OmniAuth
-  if Settings.respond_to?(:sso) && ActiveModel::Type::Boolean.new.cast(Settings.sso&.enabled)
+  # Read SSO settings from AppSetting (DB) with env var fallback.
+  # AppSetting may not exist yet (before migration), so rescue gracefully.
+  _sso_enabled = begin
+    AppSetting.sso_enabled?
+  rescue
+    ActiveModel::Type::Boolean.new.cast(ENV.fetch("PWP__SSO__ENABLED", false))
+  end
+
+  if _sso_enabled
+    _sso_client_id = begin; AppSetting.sso_client_id; rescue; ENV.fetch("PWP__SSO__AZURE_CLIENT_ID", ""); end
+    _sso_client_secret = begin; AppSetting.sso_client_secret; rescue; ENV.fetch("PWP__SSO__AZURE_CLIENT_SECRET", ""); end
+    _sso_tenant_id = begin; AppSetting.sso_tenant_id; rescue; ENV.fetch("PWP__SSO__AZURE_TENANT_ID", "common"); end
+
     config.omniauth :microsoft_graph,
-      Settings.sso.azure_client_id,
-      Settings.sso.azure_client_secret,
+      _sso_client_id,
+      _sso_client_secret,
       scope: "openid email profile User.Read",
-      tenant: Settings.sso.azure_tenant_id || "common"
+      tenant: _sso_tenant_id
   end
 
   # ==> Warden configuration

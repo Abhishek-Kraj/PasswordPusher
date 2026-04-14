@@ -1,13 +1,23 @@
 # frozen_string_literal: true
 
-if defined?(Scimitar) && Settings.respond_to?(:scim) && ActiveModel::Type::Boolean.new.cast(Settings.scim&.enabled)
+# Read SCIM enabled flag from AppSetting (DB) with env var fallback.
+# AppSetting may not exist yet (before migration), so rescue gracefully.
+_scim_enabled = begin
+  AppSetting.scim_enabled?
+rescue
+  ActiveModel::Type::Boolean.new.cast(ENV.fetch("PWP__SCIM__ENABLED", false))
+end
+
+if defined?(Scimitar) && _scim_enabled
   Rails.application.config.to_prepare do
     Scimitar.engine_configuration = Scimitar::EngineConfiguration.new(
       token_authenticator: proc { |token, _options|
-        ActiveSupport::SecurityUtils.secure_compare(
-          token,
-          Settings.scim.bearer_token
-        )
+        expected = begin
+          AppSetting.scim_bearer_token
+        rescue
+          ENV.fetch("PWP__SCIM__BEARER_TOKEN", "")
+        end
+        ActiveSupport::SecurityUtils.secure_compare(token, expected)
       },
       basic_authenticator: nil,
       application_controller_mixin: Module.new do
