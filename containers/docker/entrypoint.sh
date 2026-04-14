@@ -83,6 +83,10 @@ else
     export TARGET_PORT=5100
 fi
 
+# Default thruster HTTP/HTTPS to non-privileged ports for container compatibility
+export HTTP_PORT=${HTTP_PORT:-8080}
+export HTTPS_PORT=${HTTPS_PORT:-8443}
+
 echo "Password Pusher: starting foreman..."
 if [ -n "$PWP__NO_WORKER" ] || [ -n "$PWP_PUBLIC_GATEWAY" ]; then
     exec bundle exec foreman start -m web=1

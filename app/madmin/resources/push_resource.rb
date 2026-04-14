@@ -9,11 +9,11 @@ class PushResource < Madmin::Resource
   attribute :deletable_by_viewer
   attribute :retrieval_step
   attribute :expired_on
-  attribute :created_at, form: false
+  attribute :created_at, form: false, index: true
   attribute :updated_at, form: false
 
   # Associations
-  attribute :user
+  attribute :user, index: true
   attribute :audit_logs
 
   # Add scopes to easily filter records

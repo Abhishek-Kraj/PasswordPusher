@@ -33,5 +33,8 @@ Rails.application.routes.draw do
     [200, {"Content-Type" => "text/html"}, ["<html style='background:green;width:100%;height:100vh'></html>"]]
   }
 
+  # JSON health check endpoint with database connectivity verification
+  get "/healthz" => "health#healthz"
+
   post "/csp-violation-report", to: "csp_reports#create"
 end

@@ -381,13 +381,13 @@ class PushesController < BaseController
   def push_params
     case params.dig(:push, :kind)
     when "url"
-      params.require(:push).permit(:kind, :name, :expire_after_days, :expire_after_views,
+      params.require(:push).permit(:kind, :name, :expire_after_days, :expire_after_hours, :expire_after_views,
         :retrieval_step, :payload, :note, :passphrase)
     when "file"
-      params.require(:push).permit(:kind, :name, :expire_after_days, :expire_after_views, :deletable_by_viewer,
+      params.require(:push).permit(:kind, :name, :expire_after_days, :expire_after_hours, :expire_after_views, :deletable_by_viewer,
         :retrieval_step, :payload, :note, :passphrase, files: [])
     else
-      params.require(:push).permit(:kind, :name, :expire_after_days, :expire_after_views, :deletable_by_viewer,
+      params.require(:push).permit(:kind, :name, :expire_after_days, :expire_after_hours, :expire_after_views, :deletable_by_viewer,
         :retrieval_step, :payload, :note, :passphrase)
     end
   rescue => e
@@ -399,13 +399,13 @@ class PushesController < BaseController
     # Don't allow kind to be changed after creation for security
     case @push.kind
     when "url"
-      params.require(:push).permit(:name, :expire_after_days, :expire_after_views,
+      params.require(:push).permit(:name, :expire_after_days, :expire_after_hours, :expire_after_views,
         :retrieval_step, :payload, :note, :passphrase)
     when "file"
-      params.require(:push).permit(:name, :expire_after_days, :expire_after_views, :deletable_by_viewer,
+      params.require(:push).permit(:name, :expire_after_days, :expire_after_hours, :expire_after_views, :deletable_by_viewer,
         :retrieval_step, :payload, :note, :passphrase, files: [])
     else
-      params.require(:push).permit(:name, :expire_after_days, :expire_after_views, :deletable_by_viewer,
+      params.require(:push).permit(:name, :expire_after_days, :expire_after_hours, :expire_after_views, :deletable_by_viewer,
         :retrieval_step, :payload, :note, :passphrase)
     end
   rescue => e

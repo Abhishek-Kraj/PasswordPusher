@@ -1157,6 +1157,15 @@ throttling:
   # Environment Variable Override: PWP__THROTTLING__SECOND='20'
   second: 60
 
+  # Skip throttling entirely for authenticated (logged-in) users.
+  # When enabled, requests from users with a valid Devise session
+  # are safelisted and never rate-limited.
+  #
+  # Default: false
+  #
+  # Environment Variable Override: PWP__THROTTLING__SKIP_AUTHENTICATED='true'
+  skip_authenticated: false
+
 ### Purge After
 #
 # Set the time after which expired pushes, including metadata like

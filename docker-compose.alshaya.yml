@@ -1,0 +1,83 @@
+# PasswordPusher - Alshaya Production Setup with PostgreSQL
+# Usage: docker compose -f docker-compose.alshaya.yml up -d
+
+services:
+  pwpush:
+    image: docker.io/pglombardo/pwpush:latest
+    restart: unless-stopped
+    ports:
+      - "5100:5100"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgres://pwpush:${POSTGRES_PASSWORD:-changeme_in_production}@postgres:5432/pwpush_production"
+      SECRET_KEY_BASE: "${SECRET_KEY_BASE}"
+      PWPUSH_MASTER_KEY: "${PWPUSH_MASTER_KEY}"
+
+      # -- Features --
+      PWP__ENABLE_URL_PUSHES: "true"
+      PWP__ENABLE_FILE_PUSHES: "true"
+      PWP__ENABLE_QR_PUSHES: "true"
+      PWP__ALLOW_ANONYMOUS: "false"
+
+      # -- Authentication --
+      PWP__DISABLE_SIGNUPS: "false"
+      PWP__DISABLE_LOGINS: "false"
+
+      # -- Deployment --
+      PWP__HOST_DOMAIN: "${PWP_HOST_DOMAIN:-localhost}"
+      PWP__HOST_PROTOCOL: "${PWP_HOST_PROTOCOL:-http}"
+      PWP__SECURE_COOKIES: "${PWP_SECURE_COOKIES:-false}"
+
+      # -- Branding --
+      PWP__BRAND__TITLE: "Alshaya Password Pusher"
+      PWP__BRAND__TAGLINE: "Securely share passwords and sensitive data"
+
+      # -- Timezone --
+      PWP__TIMEZONE: "Asia/Kuwait"
+
+      # -- File storage --
+      PWP__FILES__STORAGE: "local"
+
+      # -- Logging --
+      PWP__LOG_LEVEL: "info"
+      PWP__LOG_TO_STDOUT: "true"
+
+      # -- Push defaults --
+      PWP__PW__EXPIRE_AFTER_DAYS_DEFAULT: "7"
+      PWP__PW__EXPIRE_AFTER_VIEWS_DEFAULT: "5"
+      PWP__PW__ENABLE_RETRIEVAL_STEP: "true"
+      PWP__PW__RETRIEVAL_STEP_DEFAULT: "true"
+      PWP__PW__ENABLE_DELETABLE_PUSHES: "true"
+
+    volumes:
+      - pwpush-storage:/opt/PasswordPusher/storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5100/up"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pwpush
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-changeme_in_production}"
+      POSTGRES_DB: pwpush_production
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pwpush -d pwpush_production"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  pwpush-storage:
+    driver: local
+  pgdata:
+    driver: local

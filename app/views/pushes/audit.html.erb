@@ -40,8 +40,8 @@
                     <em class="bi bi-calendar text-muted mt-1"></em>
                     <span>
                         <%= _('Expire after') %>:
-                        <strong><%= sprintf("%s %s", @push.expire_after_days, n_('Day', 'Days', @push.expire_after_days)) %></strong>
-                        <small class="d-block text-muted"><%= _('The push expires after this number of days.') %></small>
+                        <strong><%= sprintf("%s %s", @push.expire_after_days, n_('Day', 'Days', @push.expire_after_days)) %><% if (@push.expire_after_hours || 0) > 0 %> <%= sprintf("%s %s", @push.expire_after_hours, n_('Hour', 'Hours', @push.expire_after_hours)) %><% end %></strong>
+                        <small class="d-block text-muted"><%= _('The push expires after this duration.') %></small>
                     </span>
                 </div>
                 <% unless @push.url? %>
@@ -117,8 +117,8 @@
                 <div class="list-group-item d-flex gap-2">
                     <em class="bi bi-hourglass-split text-muted mt-1"></em>
                     <span>
-                        <%= _('Days Remaining') %>: <strong><%= @push.days_remaining %></strong>
-                        <small class="d-block text-muted"><%= _('Number of days until this push expires if the maximum view count isn\'t reached.') %></small>
+                        <%= _('Time Remaining') %>: <strong><%= @push.days_remaining %> <%= n_('day', 'days', @push.days_remaining) %><% if @push.hours_remaining > 0 %> <%= @push.hours_remaining %> <%= n_('hour', 'hours', @push.hours_remaining) %><% end %></strong>
+                        <small class="d-block text-muted"><%= _('Time until this push expires if the maximum view count isn\'t reached.') %></small>
                     </span>
                 </div>
             </div>

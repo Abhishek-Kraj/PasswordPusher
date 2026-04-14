@@ -4,6 +4,7 @@ import Cookies from 'js-cookie'
 export default class extends Controller {
     static targets = [
         "daysRange", "daysRangeLabel",
+        "hoursRange", "hoursRangeLabel",
         "viewsRange", "viewsRangeLabel",
         "saveSettings",
         "deletableByViewerCheckbox",
@@ -16,6 +17,10 @@ export default class extends Controller {
         langDay: String,
         langDays: String,
         defaultDays: Number,
+
+        langHour: String,
+        langHours: String,
+        defaultHours: Number,
 
         langView: String,
         langViews: String,
@@ -41,6 +46,15 @@ export default class extends Controller {
         }
     }
 
+    updateHoursSlider(event) {
+        let hours = event.target.value
+        if (hours > 1) {
+            this.hoursRangeLabelTarget.innerText = hours + " " + this.langHoursValue;
+        } else {
+            this.hoursRangeLabelTarget.innerText = hours + " " + this.langHourValue;
+        }
+    }
+
     updateViewsSlider(event) {
         let views = event.target.value
         if (views > 1) {
@@ -53,6 +67,11 @@ export default class extends Controller {
     loadSettings() {
         this.daysRangeTarget.value = Cookies.get(`pwpush_${this.tabNameValue}_days`) || this.defaultDaysValue
         this.daysRangeLabelTarget.innerText = this.daysRangeTarget.value + " " + this.langDaysValue
+        if (this.hasHoursRangeTarget) {
+            this.hoursRangeTarget.value = Cookies.get(`pwpush_${this.tabNameValue}_hours`) || this.defaultHoursValue
+            let hoursLabel = this.hoursRangeTarget.value > 1 ? this.langHoursValue : this.langHourValue
+            this.hoursRangeLabelTarget.innerText = this.hoursRangeTarget.value + " " + hoursLabel
+        }
         this.viewsRangeTarget.value = Cookies.get(`pwpush_${this.tabNameValue}_views`) || this.defaultViewsValue
         this.viewsRangeLabelTarget.innerText = this.viewsRangeTarget.value + " " + this.langViewsValue
 
@@ -87,6 +106,9 @@ export default class extends Controller {
     saveSettings(event) {
         event.preventDefault()
         Cookies.set(`pwpush_${this.tabNameValue}_days`, this.daysRangeTarget.value, { expires: 365 })
+        if (this.hasHoursRangeTarget) {
+            Cookies.set(`pwpush_${this.tabNameValue}_hours`, this.hoursRangeTarget.value, { expires: 365 })
+        }
         Cookies.set(`pwpush_${this.tabNameValue}_views`, this.viewsRangeTarget.value, { expires: 365 })
 
         if (this.hasDeletableByViewerCheckboxTarget) {

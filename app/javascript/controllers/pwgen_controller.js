@@ -130,6 +130,10 @@ export default class extends Controller {
             minSyllableLength: Number(this.minSyllableLengthInputTarget.value),
             syllablesCount: Number(this.numSyllablesInputTarget.value)
         }
+
+        if (this.config.minSyllableLength > this.config.maxSyllableLength) {
+            this.config.maxSyllableLength = this.config.minSyllableLength;
+        }
     }
 
     resetSettings(event) {
@@ -181,6 +185,9 @@ export default class extends Controller {
     }
 
     generatePassword() {
+        if (this.config.minSyllableLength > this.config.maxSyllableLength) {
+            this.config.maxSyllableLength = this.config.minSyllableLength;
+        }
         if (this.config.use_separators === false) {
             this.config.separators = ''
         }

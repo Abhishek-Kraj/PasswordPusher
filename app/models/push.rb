@@ -34,8 +34,24 @@ class Push < ApplicationRecord
     (Time.zone.now.to_datetime - created_at.to_datetime).to_i
   end
 
+  def hours_old
+    ((Time.zone.now - created_at) / 1.hour).floor
+  end
+
+  def total_expire_after_hours
+    (expire_after_days * 24) + (expire_after_hours || 0)
+  end
+
+  def total_hours_remaining
+    [total_expire_after_hours - hours_old, 0].max
+  end
+
   def days_remaining
-    [(expire_after_days - days_old), 0].max
+    total_hours_remaining / 24
+  end
+
+  def hours_remaining
+    total_hours_remaining % 24
   end
 
   def views_remaining
@@ -80,6 +96,7 @@ class Push < ApplicationRecord
     payload = args.first[:payload] if args.first.key?(:payload)
 
     attr_hash["days_remaining"] = days_remaining
+    attr_hash["hours_remaining"] = hours_remaining
     attr_hash["views_remaining"] = views_remaining
     attr_hash["deleted"] = audit_logs.any?(&:expire?)
 
@@ -158,12 +175,15 @@ class Push < ApplicationRecord
 
   def set_expire_limits
     self.expire_after_days ||= settings_for_kind.expire_after_days_default
+    self.expire_after_hours ||= settings_for_kind.expire_after_hours_default
     self.expire_after_views ||= settings_for_kind.expire_after_views_default
 
-    # MIGRATE - ask
-    # Are these assignments needed?
     unless self.expire_after_days.between?(settings_for_kind.expire_after_days_min, settings_for_kind.expire_after_days_max)
       self.expire_after_days = settings_for_kind.expire_after_days_default
+    end
+
+    unless self.expire_after_hours.between?(settings_for_kind.expire_after_hours_min, settings_for_kind.expire_after_hours_max)
+      self.expire_after_hours = settings_for_kind.expire_after_hours_default
     end
 
     unless self.expire_after_views.between?(settings_for_kind.expire_after_views_min, settings_for_kind.expire_after_views_max)
@@ -172,7 +192,7 @@ class Push < ApplicationRecord
   end
 
   def check_limits
-    expire if !expired? && (!days_remaining.positive? || !views_remaining.positive?)
+    expire if !expired? && (!total_hours_remaining.positive? || !views_remaining.positive?)
   end
 
   def set_url_token

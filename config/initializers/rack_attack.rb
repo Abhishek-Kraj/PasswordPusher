@@ -35,6 +35,15 @@ if defined? Rack::Attack
     # probably malicious or a poorly-configured scraper. Either way, they
     # don't deserve to hog all of the app server's CPU. Cut them off!
 
+    # Safelist authenticated users from throttling when configured.
+    # Devise/Warden stores the authenticated user in the Rack env under 'warden'.
+    if Settings.throttling&.skip_authenticated
+      safelist("authenticated_users") do |req|
+        warden = req.env["warden"]
+        warden&.authenticated?(:user)
+      end
+    end
+
     unless Rails.env.test?
       # Throttle all requests by IP
       #

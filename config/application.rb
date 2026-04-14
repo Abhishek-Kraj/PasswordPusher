@@ -29,7 +29,7 @@ module PasswordPusher
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
-    # config.time_zone = "Central Time (US & Canada)"
+    config.time_zone = Settings.timezone if Settings.respond_to?(:timezone) && Settings.timezone.present?
     # config.eager_load_paths << Rails.root.join("extras")
 
     # https://github.com/rails/mission_control-jobs?tab=readme-ov-file#custom-authentication

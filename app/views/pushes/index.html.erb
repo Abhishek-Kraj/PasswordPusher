@@ -90,7 +90,7 @@
                 <% else %>
                   <span class="badge bg-success-subtle text-success-emphasis">
                     <em class="bi bi-check-circle me-1"></em>
-                    <%= _('%{views}v / %{days}d') % { views: push.views_remaining, days: push.days_remaining } %>
+                    <%= _('%{views}v / %{days}d %{hours}h') % { views: push.views_remaining, days: push.days_remaining, hours: push.hours_remaining } %>
                   </span>
                 <% end %>
               </td>

@@ -81,6 +81,7 @@ class Api::V1::PushesController < Api::BaseController
     param :name, String, desc: "A name shown in the dashboard, notifications and emails.", allow_blank: true
     param :note, String, desc: "If authenticated, the URL encoded note for this push.  Visible only to the push creator.", allow_blank: true
     param :expire_after_days, Integer, desc: "Expire secret link and delete after this many days."
+    param :expire_after_hours, Integer, desc: "Additional hours to add to the expiration time (0-23). Combined with expire_after_days."
     param :expire_after_views, Integer, desc: "Expire secret link and delete after this many views."
     param :deletable_by_viewer, %w[true false], desc: "Allow users to delete passwords once retrieved."
     param :retrieval_step, %w[true false], desc: "Helps to avoid chat systems and URL scanners from eating up views."
@@ -459,10 +460,10 @@ class Api::V1::PushesController < Api::BaseController
 
   def push_params
     if request.path.start_with?("/f")
-      params.require(:file_push).permit(:name, :expire_after_days, :expire_after_views, :deletable_by_viewer,
+      params.require(:file_push).permit(:name, :expire_after_days, :expire_after_hours, :expire_after_views, :deletable_by_viewer,
         :retrieval_step, :payload, :note, :passphrase, files: [])
     elsif request.path.start_with?("/r")
-      params.require(:url).permit(:name, :expire_after_days, :expire_after_views,
+      params.require(:url).permit(:name, :expire_after_days, :expire_after_hours, :expire_after_views,
         :retrieval_step, :payload, :note, :passphrase)
     else
       # https://docs.pwpush.com/docs/json-api/#curl
@@ -477,7 +478,7 @@ class Api::V1::PushesController < Api::BaseController
       # To respond same request, password[files] are allowed, but it will create a file push.
       #
       # More, kind can be used to create different kind pushes.
-      params.require(:password).permit(:name, :kind, :expire_after_days, :expire_after_views, :deletable_by_viewer,
+      params.require(:password).permit(:name, :kind, :expire_after_days, :expire_after_hours, :expire_after_views, :deletable_by_viewer,
         :retrieval_step, :payload, :note, :passphrase, files: [])
     end
   rescue => e

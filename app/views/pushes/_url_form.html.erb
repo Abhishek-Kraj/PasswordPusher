@@ -6,6 +6,9 @@
     data-knobs-lang-day-value="<%= _('Day') %>"
     data-knobs-lang-days-value="<%= _('Days') %>"
     data-knobs-default-days-value="<%= @push.persisted? ? @push.days_remaining : @push.settings_for_kind.expire_after_days_default %>"
+    data-knobs-lang-hour-value="<%= _('Hour') %>"
+    data-knobs-lang-hours-value="<%= _('Hours') %>"
+    data-knobs-default-hours-value="<%= @push.persisted? ? @push.hours_remaining : @push.settings_for_kind.expire_after_hours_default %>"
     data-knobs-lang-view-value="<%= _('View') %>"
     data-knobs-lang-views-value="<%= _('Views') %>"
     data-knobs-default-views-value="<%= @push.persisted? ? @push.views_remaining : @push.settings_for_kind.expire_after_views_default %>"
@@ -56,6 +59,23 @@
                     </div>
                     <div class='col-auto'>
                         <span class="badge rounded-pill bg-primary" data-knobs-target="daysRangeLabel"><%= @push.persisted? ? @push.days_remaining : @push.settings_for_kind.expire_after_days_default %> <%= _('Days') %></span>
+                    </div>
+                </div>
+
+                <div class='row align-items-center mb-2'>
+                    <div class='col'>
+                        <%= range_field_tag("push_expire_after_hours", @push.persisted? ? @push.hours_remaining : @push.settings_for_kind.expire_after_hours_default,
+                                            { :name => "push[expire_after_hours]",
+                                              :class => "form-range",
+                                              :min => @push.settings_for_kind.expire_after_hours_min,
+                                              :max => @push.settings_for_kind.expire_after_hours_max,
+                                              :step => "1",
+                                              "data-action" => "change->knobs#updateHoursSlider input->knobs#updateHoursSlider",
+                                              "data-knobs-target" => "hoursRange"
+                                              }) %>
+                    </div>
+                    <div class='col-auto'>
+                        <span class="badge rounded-pill bg-primary" data-knobs-target="hoursRangeLabel"><%= @push.persisted? ? @push.hours_remaining : @push.settings_for_kind.expire_after_hours_default %> <%= _('Hours') %></span>
                     </div>
                 </div>
 

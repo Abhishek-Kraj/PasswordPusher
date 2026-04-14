@@ -1,7 +1,7 @@
 class AuditLogResource < Madmin::Resource
   # Attributes
   attribute :id, form: false
-  attribute :created_at, form: false
+  attribute :created_at, form: false, index: true
   attribute :ip, index: true
   attribute :user_agent, index: true
   attribute :referrer, index: true
@@ -9,8 +9,8 @@ class AuditLogResource < Madmin::Resource
   attribute :updated_at, form: false
 
   # Associations
-  attribute :push
-  attribute :user
+  attribute :push, index: true
+  attribute :user, index: true
 
   # Add scopes to easily filter records
   # scope :published
@@ -24,7 +24,7 @@ class AuditLogResource < Madmin::Resource
   # def self.display_name(record) = record.name
 
   # Customize the default sort column and direction.
-  # def self.default_sort_column = "created_at"
-  #
-  # def self.default_sort_direction = "desc"
+  def self.default_sort_column = "created_at"
+
+  def self.default_sort_direction = "desc"
 end

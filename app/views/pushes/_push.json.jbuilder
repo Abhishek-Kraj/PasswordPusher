@@ -8,7 +8,9 @@ json.extract! push, :expire_after_views,
   :created_at,
   :updated_at,
   :expire_after_days,
+  :expire_after_hours,
   :days_remaining,
+  :hours_remaining,
   :views_remaining,
   :deleted
 

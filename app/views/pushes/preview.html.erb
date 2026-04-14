@@ -57,7 +57,7 @@
         <em class="bi bi-clock me-1"></em><%= _("This secret link and all content will be deleted in") %>
       </p>
       <p class="mb-0">
-        <span class="badge bg-secondary fs-6"><%= @push.days_remaining %> <%= n_('day', 'days', @push.days_remaining) %></span>
+        <span class="badge bg-secondary fs-6"><%= @push.days_remaining %> <%= n_('day', 'days', @push.days_remaining) %><% if @push.hours_remaining > 0 %> <%= @push.hours_remaining %> <%= n_('hour', 'hours', @push.hours_remaining) %><% end %></span>
         <span class="mx-1"><%= _('or') %></span>
         <span class="badge bg-secondary fs-6"><%= @push.views_remaining %> <%= n_('view', 'views', @push.views_remaining) %></span>
         <span class="text-muted small"><%= _('(whichever comes first)') %></span>

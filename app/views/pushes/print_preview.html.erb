@@ -10,7 +10,7 @@
       <% if @show_expiration %>
         <p class='my-5 text-center'>
           <%= _('This data contained here will expire after') %>
-          <strong><%= @push.expire_after_days %> <%= n_('day', 'days', @push.expire_after_days) %></strong>
+          <strong><%= @push.expire_after_days %> <%= n_('day', 'days', @push.expire_after_days) %><% if (@push.expire_after_hours || 0) > 0 %> <%= @push.expire_after_hours %> <%= n_('hour', 'hours', @push.expire_after_hours) %><% end %></strong>
           <%= _('or') %>
           <strong><%= @push.expire_after_views %> <%= n_('view', 'views', @push.expire_after_views) %></strong>
           <%= _('(whichever comes first)') %>.

@@ -124,6 +124,7 @@ x-env: &x-env
     # PWP__SECURE_COOKIES: "false"
     # PWP__THROTTLING__MINUTE: "120"
     # PWP__THROTTLING__SECOND: "60"
+    # PWP__THROTTLING__SKIP_AUTHENTICATED: "true"
     # PWP__PURGE_AFTER: "disabled"
 
     # --- Logging ---

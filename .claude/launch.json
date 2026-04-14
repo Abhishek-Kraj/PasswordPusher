@@ -1,0 +1,71 @@
+{
+  "$schema": "https://cdn.jsdelivr.net/gh/anthropics/claude-code@main/schemas/launch.json",
+  "servers": [
+    {
+      "name": "Rails Dev (foreman)",
+      "description": "Full dev environment: Rails server (port 5100) + Solid Queue worker + CSS/JS watchers via foreman",
+      "command": "bin/dev",
+      "port": 5100,
+      "env": {
+        "PORT": "5100",
+        "RAILS_ENV": "development"
+      },
+      "healthCheck": {
+        "url": "http://localhost:5100/up",
+        "interval": 5000,
+        "timeout": 10000,
+        "retries": 12
+      }
+    },
+    {
+      "name": "Rails Server (standalone)",
+      "description": "Puma web server only — no worker, no asset watchers. Good for quick testing",
+      "command": "bundle exec rails server -p 5100",
+      "port": 5100,
+      "env": {
+        "RAILS_ENV": "development"
+      },
+      "healthCheck": {
+        "url": "http://localhost:5100/up",
+        "interval": 5000,
+        "timeout": 10000,
+        "retries": 12
+      }
+    },
+    {
+      "name": "Solid Queue Worker",
+      "description": "Background job processor (run alongside standalone Rails server)",
+      "command": "bundle exec rake solid_queue:start",
+      "env": {
+        "RAILS_ENV": "development"
+      }
+    },
+    {
+      "name": "Docker Compose (SQLite)",
+      "description": "Upstream default: single pwpush container with SQLite, ports 80/443/5100",
+      "command": "docker compose up",
+      "port": 5100,
+      "healthCheck": {
+        "url": "http://localhost:5100/up",
+        "interval": 5000,
+        "timeout": 10000,
+        "retries": 20
+      }
+    },
+    {
+      "name": "Docker Compose (Alshaya + PostgreSQL)",
+      "description": "Alshaya setup: pwpush + PostgreSQL 15, port 5100. Requires .env.alshaya secrets",
+      "command": "docker compose -f docker-compose.alshaya.yml up",
+      "port": 5100,
+      "env": {
+        "POSTGRES_PASSWORD": "changeme_in_production"
+      },
+      "healthCheck": {
+        "url": "http://localhost:5100/up",
+        "interval": 5000,
+        "timeout": 15000,
+        "retries": 20
+      }
+    }
+  ]
+}

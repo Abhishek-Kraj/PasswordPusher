@@ -12,13 +12,14 @@ Rails.application.configure do
     policy.font_src :self, :https, :http, :data
     policy.img_src :self, :https, :http, :data, :blob
     policy.media_src :self, :https, :http, :data, :blob
+    policy.base_uri :self
     policy.object_src :none
-    policy.script_src :self, :https, :http
+    policy.script_src :self, :https, :http, :strict_dynamic
     policy.style_src :self, :https, :http, :unsafe_inline
     policy.style_src_attr :unsafe_inline
     policy.connect_src :self, :https, :http, :ws, :wss
     policy.report_uri "/csp-violation-report"
-    policy.script_src_elem :self, :https, :http
+    policy.script_src_elem :self, :https, :http, :strict_dynamic
   end
 end
 

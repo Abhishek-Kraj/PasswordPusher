@@ -1,0 +1,17 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'europe-west1-docker.pkg.dev/alshaya-titan/pwpush-repo/pwpush-alshaya:latest'
+      - '-t'
+      - 'europe-west1-docker.pkg.dev/alshaya-titan/pwpush-repo/pwpush-alshaya:${SHORT_SHA}'
+      - '-f'
+      - 'containers/docker/Dockerfile'
+      - '.'
+images:
+  - 'europe-west1-docker.pkg.dev/alshaya-titan/pwpush-repo/pwpush-alshaya:latest'
+  - 'europe-west1-docker.pkg.dev/alshaya-titan/pwpush-repo/pwpush-alshaya:${SHORT_SHA}'
+options:
+  machineType: 'E2_HIGHCPU_8'
+timeout: '1800s'

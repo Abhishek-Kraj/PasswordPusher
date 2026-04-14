@@ -144,5 +144,6 @@ RUN rm -rf ${APP_ROOT}/.do \
 RUN touch /opt/PasswordPusher/.env.production && chown pwpusher:pwpusher /opt/PasswordPusher/.env.production
 
 USER pwpusher
-EXPOSE 80 443 5100
+EXPOSE 8080 8443 5100
+ENV HTTP_PORT=8080 HTTPS_PORT=8443
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint"]

@@ -20,6 +20,12 @@ module Madmin
       else
         render :new, status: :unprocessable_content
       end
+    rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError,
+           Net::SMTPFatalError, Net::SMTPUnknownError, Net::OpenTimeout,
+           Net::ReadTimeout, SocketError, Errno::ECONNREFUSED, Errno::ECONNRESET => e
+      Rails.logger.error("Failed to send user creation email: #{e.class} - #{e.message}")
+      redirect_to resource.show_path(@record), notice: success_message,
+        alert: _("The user was created but the email notification could not be sent.")
     end
 
     def destroy

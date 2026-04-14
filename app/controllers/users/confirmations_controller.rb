@@ -9,9 +9,15 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   # end
 
   # POST /resource/confirmation
-  # def create
-  #   super
-  # end
+  def create
+    super
+  rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError,
+         Net::SMTPFatalError, Net::SMTPUnknownError, Net::OpenTimeout,
+         Net::ReadTimeout, SocketError, Errno::ECONNREFUSED, Errno::ECONNRESET => e
+    Rails.logger.error("Failed to send confirmation email: #{e.class} - #{e.message}")
+    flash[:warning] = _("Your request was processed but the email could not be sent. Please contact your administrator.")
+    redirect_to new_user_session_path
+  end
 
   # GET /resource/confirmation?confirmation_token=abcdef
   def show

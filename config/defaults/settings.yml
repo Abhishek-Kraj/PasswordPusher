@@ -186,6 +186,24 @@ allow_anonymous: true
 #
 login_session_timeout: "2 hours"
 
+## Max Failed Login Attempts
+#
+# The number of failed login attempts before an account is locked.
+#
+# Environment variable override:
+# PWP__LOGIN_MAX_FAILED_ATTEMPTS='10'
+#
+login_max_failed_attempts: <%= ENV.fetch("PWP__LOGIN_MAX_FAILED_ATTEMPTS", 10) %>
+
+## Account Unlock Time
+#
+# The number of minutes before a locked account is automatically unlocked.
+#
+# Environment variable override:
+# PWP__LOGIN_UNLOCK_IN_MINUTES='60'
+#
+login_unlock_in_minutes: <%= ENV.fetch("PWP__LOGIN_UNLOCK_IN_MINUTES", 60) %>
+
 ## Disable Signups
 #
 # Disallow new user accounts to be created in the application.
@@ -354,6 +372,21 @@ pw:
   expire_after_days_min: 1
   expire_after_days_max: 90
 
+  # Expire Password Pushes After XX Hours
+  #
+  # Controls the "Expire After Hours" for Password Pushes.
+  # This is additive with expire_after_days. For example, 2 days and 6 hours.
+  # Set the default to 0 to keep the current days-only behavior.
+  #
+  # Environment variable overrides:
+  # PWP__PW__EXPIRE_AFTER_HOURS_DEFAULT=0
+  # PWP__PW__EXPIRE_AFTER_HOURS_MIN=0
+  # PWP__PW__EXPIRE_AFTER_HOURS_MAX=23
+  #
+  expire_after_hours_default: 0
+  expire_after_hours_min: 0
+  expire_after_hours_max: 23
+
   # Expire Password Pushes After XX Views
   #
   # Controls the "Expire After Views" form settings in Password#new
@@ -457,6 +490,19 @@ url:
   expire_after_days_min: 1
   expire_after_days_max: 90
 
+  # Expire URL Pushes After XX Hours
+  #
+  # This is additive with expire_after_days. For example, 2 days and 6 hours.
+  #
+  # Environment variable overrides:
+  # PWP__URL__EXPIRE_AFTER_HOURS_DEFAULT=0
+  # PWP__URL__EXPIRE_AFTER_HOURS_MIN=0
+  # PWP__URL__EXPIRE_AFTER_HOURS_MAX=23
+  #
+  expire_after_hours_default: 0
+  expire_after_hours_min: 0
+  expire_after_hours_max: 23
+
   # Expire URL Pushes After XX Views
   #
   # Controls the "Expire After Views" form settings in Password#new
@@ -511,6 +557,19 @@ files:
   expire_after_days_default: 7
   expire_after_days_min: 1
   expire_after_days_max: 90
+
+  # Expire File Pushes After XX Hours
+  #
+  # This is additive with expire_after_days. For example, 2 days and 6 hours.
+  #
+  # Environment variable overrides:
+  # PWP__FILES__EXPIRE_AFTER_HOURS_DEFAULT=0
+  # PWP__FILES__EXPIRE_AFTER_HOURS_MIN=0
+  # PWP__FILES__EXPIRE_AFTER_HOURS_MAX=23
+  #
+  expire_after_hours_default: 0
+  expire_after_hours_min: 0
+  expire_after_hours_max: 23
 
   # Expire File Pushes After XX Views
   #
@@ -684,6 +743,19 @@ qr:
   expire_after_days_default: 7
   expire_after_days_min: 1
   expire_after_days_max: 90
+
+  # Expire QR Code Pushes After XX Hours
+  #
+  # This is additive with expire_after_days. For example, 2 days and 6 hours.
+  #
+  # Environment variable overrides:
+  # PWP__QR__EXPIRE_AFTER_HOURS_DEFAULT=0
+  # PWP__QR__EXPIRE_AFTER_HOURS_MIN=0
+  # PWP__QR__EXPIRE_AFTER_HOURS_MAX=23
+  #
+  expire_after_hours_default: 0
+  expire_after_hours_min: 0
+  expire_after_hours_max: 23
 
   # Expire QR Code Pushes After XX Views
   #
@@ -1156,6 +1228,15 @@ throttling:
   #
   # Environment Variable Override: PWP__THROTTLING__SECOND='20'
   second: 60
+
+  # Skip throttling entirely for authenticated (logged-in) users.
+  # When enabled, requests from users with a valid Devise session
+  # are safelisted and never rate-limited.
+  #
+  # Default: false
+  #
+  # Environment Variable Override: PWP__THROTTLING__SKIP_AUTHENTICATED='true'
+  skip_authenticated: false
 
 ### Purge After
 #

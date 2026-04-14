@@ -40,7 +40,7 @@
         <p class="text-muted mt-5">
           <%= _("This secret link and all content will be deleted in") %>
           <strong>
-            <%= @push.days_remaining.to_s + ' ' + n_('day', 'days', @push.days_remaining) %>
+            <%= @push.days_remaining.to_s + ' ' + n_('day', 'days', @push.days_remaining) %><% if @push.hours_remaining > 0 %> <%= @push.hours_remaining.to_s + ' ' + n_('hour', 'hours', @push.hours_remaining) %><% end %>
           </strong>
           <% if @push.views_remaining == 0 %>
               <%= _('or') %> <strong><%= _('0 more views') %></strong>
@@ -74,7 +74,7 @@
         <p class="text-muted mt-5">
           <%= _("This secret link and all content will be deleted in") %>
           <strong>
-            <%= @push.days_remaining.to_s + ' ' + n_('day', 'days', @push.days_remaining) %>
+            <%= @push.days_remaining.to_s + ' ' + n_('day', 'days', @push.days_remaining) %><% if @push.hours_remaining > 0 %> <%= @push.hours_remaining.to_s + ' ' + n_('hour', 'hours', @push.hours_remaining) %><% end %>
           </strong>
           <% if @push.views_remaining == 0 %>
               <%= _('or') %> <strong><%= _('0 more views') %></strong>
