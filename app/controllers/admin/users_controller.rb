@@ -46,13 +46,23 @@ module Admin
     end
 
     def create
-      @user = User.new(email: params[:user][:email], password: Devise.friendly_token[0, 20])
+      password = if params[:user][:password].present?
+        params[:user][:password]
+      else
+        Devise.friendly_token[0, 20]
+      end
+
+      @user = User.new(email: params[:user][:email], password: password)
       @user.admin = params[:user][:admin] == "1"
       @user.skip_confirmation! if @user.respond_to?(:skip_confirmation!)
 
       if @user.save
-        @user.send_reset_password_instructions if @user.respond_to?(:send_reset_password_instructions)
-        redirect_to admin_users_path, notice: _("Invitation sent to %{email}.") % { email: @user.email }
+        if Settings.enable_user_account_emails && @user.respond_to?(:send_reset_password_instructions)
+          @user.send_reset_password_instructions
+          redirect_to admin_users_path, notice: _("User created and password reset email sent to %{email}.") % { email: @user.email }
+        else
+          redirect_to admin_users_path, notice: _("User %{email} created. Share the temporary password with them securely.") % { email: @user.email }
+        end
       else
         render :new, status: :unprocessable_entity
       end
