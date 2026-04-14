@@ -5,9 +5,7 @@ authenticated :user, lambda { |u| u.admin? } do
       resources :blobs
       resources :variant_records
     end
-    resources :audit_logs
     resources :pushes
-    resources :users, except: [:edit, :update]
     root to: "dashboard#show"
   end
 end

@@ -152,18 +152,18 @@
               </svg>
             <% end %>
 
-            <%= link_to madmin_root_path, class: "d-flex align-items-center justify-content-between p-3 bg-light rounded-3 text-decoration-none", target: "_blank", rel: "noopener noreferrer" do %>
+            <%= link_to admin_audit_logs_path, class: "d-flex align-items-center justify-content-between p-3 bg-light rounded-3 text-decoration-none" do %>
               <div class="d-flex align-items-center">
                 <svg class="text-muted me-3" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
                 <div>
-                  <div class="fw-medium text-dark"><%= _("Data Explorer") %></div>
-                  <div class="small text-muted"><%= _("Query data and manage records") %></div>
+                  <div class="fw-medium text-dark"><%= _("Audit Logs") %></div>
+                  <div class="small text-muted"><%= _("View security events and user activity") %></div>
                 </div>
               </div>
               <svg class="text-muted" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             <% end %>
           </div>
@@ -217,7 +217,7 @@
   </div>
 
   <div class="row g-4 mb-5">
-    <!-- Database Administration -->
+    <!-- Push Explorer -->
     <div class="col-lg-6">
       <div class="card h-100 shadow-sm">
         <div class="card-body">
@@ -227,21 +227,22 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
               </svg>
             </div>
-            <h2 class="h5 fw-semibold text-dark mb-0"><%= _("Database Administration") %></h2>
+            <h2 class="h5 fw-semibold text-dark mb-0"><%= _("Push Explorer") %></h2>
           </div>
-          <p class="text-muted mb-4"><%= _("Direct access to database records and user management tools.") %></p>
-          <div class="alert alert-warning d-flex align-items-center" role="alert">
-            <svg class="text-warning me-3" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-            </svg>
-            <div class="flex-grow-1">
-              <div class="fw-medium text-warning-emphasis"><%= _("Advanced Database Access") %></div>
-              <div class="small text-warning-emphasis"><%= _("Direct record manipulation and management") %></div>
-            </div>
-            <%= link_to madmin_root_path, class: "btn btn-warning btn-sm d-flex align-items-center", target: "_blank", rel: "noopener noreferrer" do %>
-              <%= _("Open Data Explorer") %>
-              <svg class="ms-2" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+          <p class="text-muted mb-4"><%= _("Browse and inspect push records, file attachments, and storage data.") %></p>
+          <div class="d-grid gap-3">
+            <%= link_to madmin_root_path, class: "d-flex align-items-center justify-content-between p-3 bg-light rounded-3 text-decoration-none" do %>
+              <div class="d-flex align-items-center">
+                <svg class="text-muted me-3" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
+                </svg>
+                <div>
+                  <div class="fw-medium text-dark"><%= _("Push Explorer") %></div>
+                  <div class="small text-muted"><%= _("Browse push records and file storage") %></div>
+                </div>
+              </div>
+              <svg class="text-muted" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             <% end %>
           </div>
@@ -347,11 +348,11 @@
       <div class="text-primary-emphasis">
         <p class="mb-3"><%= _("Welcome to the Password Pusher Administration Center! Here's your complete toolkit:") %></p>
         <ul class="list-unstyled">
-          <li class="mb-2"><strong><%= _("👥 Manage Administrators:") %></strong> <%= _("Promote or revoke admin privileges for users in your system") %></li>
-          <li class="mb-2"><strong><%= _("📊 Monitor Background Jobs:") %></strong> <%= _("Track email notifications, push cleanup, and system processing tasks") %></li>
-          <li class="mb-2"><strong><%= _("🗄️ Explore Database:") %></strong> <%= _("Direct access to users, pushes, audit logs, and file storage records") %></li>
-          <li class="mb-2"><strong><%= _("📈 View System Stats:") %></strong> <%= _("Monitor user activity, push counts, and audit log entries") %></li>
-          <li class="mb-2"><strong><%= _("🔍 Track Activity:") %></strong> <%= _("Review audit logs to understand system usage and security events") %></li>
+          <li class="mb-2"><strong><%= _("Admin Users:") %></strong> <%= _("Invite users, promote/revoke admin privileges, send password resets") %></li>
+          <li class="mb-2"><strong><%= _("Audit Logs:") %></strong> <%= _("Track security events — who viewed, created, or failed to access pushes") %></li>
+          <li class="mb-2"><strong><%= _("SSO & Provisioning:") %></strong> <%= _("Configure Microsoft Entra ID SSO and SCIM user sync from the UI") %></li>
+          <li class="mb-2"><strong><%= _("Push Explorer:") %></strong> <%= _("Browse push records and file storage data") %></li>
+          <li class="mb-2"><strong><%= _("Background Jobs:") %></strong> <%= _("Monitor email notifications, push cleanup, and system tasks") %></li>
         </ul>
       </div>
     </div>
