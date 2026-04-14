@@ -48,6 +48,7 @@
             <thead class="table-success">
               <tr>
                 <th class="border-0"><%= _("Email") %></th>
+                <th class="border-0"><%= _("Auth") %></th>
                 <th class="border-0"><%= _("Created") %></th>
                 <th class="border-0"><%= _("Last Sign In") %></th>
                 <th class="border-0 text-end"><%= _("Actions") %></th>
@@ -72,6 +73,18 @@
                         </div>
                       </div>
                     </div>
+                  </td>
+                  <td>
+                    <% if user.respond_to?(:provider) && user.provider == "microsoft_graph" %>
+                      <span class="badge bg-info"><%= _("SSO") %></span>
+                    <% elsif user.respond_to?(:provider) && user.provider == "azure_ad" %>
+                      <span class="badge bg-success"><%= _("SCIM") %></span>
+                    <% else %>
+                      <span class="badge bg-secondary"><%= _("Local") %></span>
+                    <% end %>
+                    <% if user.respond_to?(:active) && user.active == false %>
+                      <span class="badge bg-warning text-dark"><%= _("Inactive") %></span>
+                    <% end %>
                   </td>
                   <td class="text-muted small">
                     <%= local_date(user.created_at, '%B %e, %Y') %>
@@ -140,6 +153,7 @@
             <thead class="table-light">
               <tr>
                 <th class="border-0"><%= _("Email") %></th>
+                <th class="border-0"><%= _("Auth") %></th>
                 <th class="border-0"><%= _("Created") %></th>
                 <th class="border-0"><%= _("Last Sign In") %></th>
                 <th class="border-0 text-end"><%= _("Actions") %></th>
@@ -161,6 +175,18 @@
                         </div>
                       </div>
                     </div>
+                  </td>
+                  <td>
+                    <% if user.respond_to?(:provider) && user.provider == "microsoft_graph" %>
+                      <span class="badge bg-info"><%= _("SSO") %></span>
+                    <% elsif user.respond_to?(:provider) && user.provider == "azure_ad" %>
+                      <span class="badge bg-success"><%= _("SCIM") %></span>
+                    <% else %>
+                      <span class="badge bg-secondary"><%= _("Local") %></span>
+                    <% end %>
+                    <% if user.respond_to?(:active) && user.active == false %>
+                      <span class="badge bg-warning text-dark"><%= _("Inactive") %></span>
+                    <% end %>
                   </td>
                   <td class="text-muted small">
                     <%= local_date(user.created_at, '%B %e, %Y') %>
