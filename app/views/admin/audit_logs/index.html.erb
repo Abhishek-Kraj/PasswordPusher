@@ -1,0 +1,204 @@
+<% content_for :title, _("Audit Logs") %>
+
+<% content_for :breadcrumbs do %>
+  <li class="breadcrumb-item">
+    <div class="d-flex align-items-center">
+      <svg class="text-muted me-1" width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+      </svg>
+      <span class="text-muted small"><%= _("Audit Logs") %></span>
+    </div>
+  </li>
+<% end %>
+
+<!-- Stats Row -->
+<div class="row g-4 mb-4">
+  <div class="col-md-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body text-center">
+        <p class="h3 fw-bold text-primary mb-1"><%= @total_count %></p>
+        <p class="text-muted small mb-0"><%= _("Total Entries") %></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body text-center">
+        <p class="h3 fw-bold text-info mb-1"><%= @today_count %></p>
+        <p class="text-muted small mb-0"><%= _("Today's Entries") %></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body text-center">
+        <p class="h3 fw-bold text-success mb-1"><%= @unique_users_count %></p>
+        <p class="text-muted small mb-0"><%= _("Unique Users") %></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body text-center">
+        <p class="h3 fw-bold text-danger mb-1"><%= @failed_count %></p>
+        <p class="text-muted small mb-0"><%= _("Failed Attempts") %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Bar -->
+<div class="card shadow-sm mb-4">
+  <div class="card-header border-bottom">
+    <h2 class="h6 fw-semibold text-dark mb-0 d-flex align-items-center">
+      <svg class="me-2" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"></path>
+      </svg>
+      <%= _("Filter Logs") %>
+    </h2>
+  </div>
+  <div class="card-body">
+    <%= form_tag admin_audit_logs_path, method: :get, class: "row g-3 align-items-end" do %>
+      <div class="col-md-3">
+        <label class="form-label fw-medium small"><%= _("Event Kind") %></label>
+        <%= select_tag :kind,
+            options_for_select([
+              [_("All Events"), ""],
+              [_("Creation"), "creation"],
+              [_("View"), "view"],
+              [_("Failed View"), "failed_view"],
+              [_("Expire"), "expire"],
+              [_("Failed Passphrase"), "failed_passphrase"],
+              [_("Admin View"), "admin_view"],
+              [_("Owner View"), "owner_view"],
+              [_("Edit"), "edit"]
+            ], params[:kind]),
+            class: "form-select form-select-sm" %>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-medium small"><%= _("User Email") %></label>
+        <%= text_field_tag :email, params[:email], class: "form-control form-control-sm", placeholder: _("Search by email...") %>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label fw-medium small"><%= _("From") %></label>
+        <%= date_field_tag :date_from, params[:date_from], class: "form-control form-control-sm" %>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label fw-medium small"><%= _("To") %></label>
+        <%= date_field_tag :date_to, params[:date_to], class: "form-control form-control-sm" %>
+      </div>
+      <div class="col-md-2">
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary btn-sm">
+            <svg class="me-1" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"></path>
+            </svg>
+            <%= _("Filter") %>
+          </button>
+          <%= link_to _("Clear"), admin_audit_logs_path, class: "btn btn-outline-secondary btn-sm" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- Results Table -->
+<div class="card shadow-sm">
+  <div class="card-header border-bottom">
+    <div class="d-flex align-items-center justify-content-between">
+      <h2 class="h5 fw-semibold text-dark mb-0 d-flex align-items-center">
+        <svg class="text-primary me-2" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <%= _("Audit Log Entries") %>
+      </h2>
+      <div class="d-flex align-items-center gap-2">
+        <div class="rounded-circle bg-secondary" style="width: 8px; height: 8px;"></div>
+        <span class="text-muted small"><%= _("%{count} entries") % { count: @audit_logs.total_count } %></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body p-0">
+    <% if @audit_logs.any? %>
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="border-0 ps-3"><%= _("Time") %></th>
+              <th class="border-0"><%= _("Event") %></th>
+              <th class="border-0"><%= _("User") %></th>
+              <th class="border-0"><%= _("Push ID") %></th>
+              <th class="border-0"><%= _("IP Address") %></th>
+              <th class="border-0"><%= _("User Agent") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @audit_logs.each do |log| %>
+              <tr>
+                <td class="ps-3 text-muted small text-nowrap">
+                  <%= local_time(log.created_at, '%b %e, %Y %l:%M%P') %>
+                </td>
+                <td>
+                  <% badge_class = case log.kind
+                     when "creation"         then "bg-success"
+                     when "view"             then "bg-primary"
+                     when "failed_view"      then "bg-danger"
+                     when "expire"           then "bg-warning text-dark"
+                     when "failed_passphrase" then "bg-danger"
+                     when "admin_view"       then "bg-info"
+                     when "owner_view"       then "bg-secondary"
+                     when "edit"             then "bg-dark"
+                     else "bg-secondary"
+                     end %>
+                  <span class="badge <%= badge_class %>"><%= log.kind.humanize %></span>
+                </td>
+                <td class="small">
+                  <% if log.user %>
+                    <%= log.user.email %>
+                  <% else %>
+                    <span class="text-muted"><%= _("Anonymous") %></span>
+                  <% end %>
+                </td>
+                <td class="small font-monospace">
+                  <% if log.push %>
+                    <span title="<%= log.push_id %>"><%= log.push_id.to_s.truncate(12) %></span>
+                  <% else %>
+                    <span class="text-muted"><%= log.push_id.to_s.truncate(12) %></span>
+                  <% end %>
+                </td>
+                <td class="small text-muted">
+                  <% if log.ip.present? %>
+                    <span class="font-monospace"><%= log.ip %></span>
+                  <% else %>
+                    <span class="text-muted">—</span>
+                  <% end %>
+                </td>
+                <td class="small text-muted">
+                  <% if log.user_agent.present? %>
+                    <%= log.user_agent.truncate(60) %>
+                  <% else %>
+                    —
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="d-flex justify-content-center py-4">
+        <%= paginate @audit_logs, list_classes: %w(pagination justify-content-center) %>
+      </div>
+    <% else %>
+      <div class="text-center py-5">
+        <svg class="text-muted mx-auto mb-3" width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <h3 class="h6 fw-medium text-dark"><%= _("No audit log entries found") %></h3>
+        <p class="text-muted small"><%= _("No entries match the current filters.") %></p>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -41,6 +41,33 @@ module Admin
       end
     end
 
+    def new
+      @user = User.new
+    end
+
+    def create
+      @user = User.new(email: params[:user][:email], password: Devise.friendly_token[0, 20])
+      @user.admin = params[:user][:admin] == "1"
+      @user.skip_confirmation! if @user.respond_to?(:skip_confirmation!)
+
+      if @user.save
+        @user.send_reset_password_instructions if @user.respond_to?(:send_reset_password_instructions)
+        redirect_to admin_users_path, notice: _("Invitation sent to %{email}.") % { email: @user.email }
+      else
+        render :new, status: :unprocessable_entity
+      end
+    end
+
+    def send_reset_password
+      @user = User.find(params[:id])
+      if @user.respond_to?(:send_reset_password_instructions)
+        @user.send_reset_password_instructions
+        redirect_to admin_users_path, notice: _("Password reset instructions sent to %{email}.") % { email: @user.email }
+      else
+        redirect_to admin_users_path, alert: _("Password reset is not available.")
+      end
+    end
+
     def destroy
       @user = User.find(params[:id])
 
