@@ -41,33 +41,19 @@
       <svg class="me-3" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
       </svg>
-      Data Explorer Home
+      Push Explorer Home
     <% end %>
   </div>
 
-  <!-- Database Records Section -->
+  <!-- Push Records -->
   <div class="mb-4">
-    <h6 class="px-3 text-muted text-uppercase small fw-semibold mb-3">Database Records</h6>
+    <h6 class="px-3 text-muted text-uppercase small fw-semibold mb-3">Push Records</h6>
     <div class="d-grid gap-1">
-      <%= link_to madmin_users_path, class: "d-flex align-items-center px-3 py-2 text-decoration-none rounded-3 transition-all #{'bg-primary bg-opacity-10 text-primary fw-semibold' if current_page?(madmin_users_path)} #{'text-dark hover-bg-light' unless current_page?(madmin_users_path)}" do %>
-        <svg class="me-3" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-        </svg>
-        Users
-      <% end %>
-
       <%= link_to madmin_pushes_path, class: "d-flex align-items-center px-3 py-2 text-decoration-none rounded-3 transition-all #{'bg-primary bg-opacity-10 text-primary fw-semibold' if current_page?(madmin_pushes_path)} #{'text-dark hover-bg-light' unless current_page?(madmin_pushes_path)}" do %>
         <svg class="me-3" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
         </svg>
         Pushes
-      <% end %>
-
-      <%= link_to madmin_audit_logs_path, class: "d-flex align-items-center px-3 py-2 text-decoration-none rounded-3 transition-all #{'bg-primary bg-opacity-10 text-primary fw-semibold' if current_page?(madmin_audit_logs_path)} #{'text-dark hover-bg-light' unless current_page?(madmin_audit_logs_path)}" do %>
-        <svg class="me-3" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-        </svg>
-        Audit Logs
       <% end %>
     </div>
   </div>
