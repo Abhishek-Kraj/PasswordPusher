@@ -22,3 +22,21 @@
 
   <button class="w-100 btn btn-lg btn-primary mt-3" type="submit"><%= I18n.t('devise.general.login') %></button>
 <% end %>
+
+<% if devise_mapping.omniauthable? && resource_class.omniauth_providers.include?(:microsoft_graph) %>
+  <div class="text-center my-3">
+    <span class="text-muted">— or —</span>
+  </div>
+  <%= button_to user_microsoft_graph_omniauth_authorize_path,
+    method: :post,
+    data: { turbo: false },
+    class: "w-100 btn btn-lg btn-outline-primary" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" class="me-2">
+      <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+      <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+      <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+      <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+    </svg>
+    Sign in with Microsoft
+  <% end %>
+<% end %>

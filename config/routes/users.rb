@@ -4,13 +4,16 @@ else
   %i[new create edit update destroy]
 end
 
-devise_for :users, skip: :registrations, controllers: {
+devise_controllers = {
   sessions: "users/sessions",
   passwords: "users/passwords",
   unlocks: "users/unlocks",
   confirmations: "users/confirmations",
   registrations: "users/registrations"
 }
+devise_controllers[:omniauth_callbacks] = "users/omniauth_callbacks" if Settings.respond_to?(:sso) && Settings.sso&.enabled
+
+devise_for :users, skip: :registrations, controllers: devise_controllers
 
 devise_scope :user do
   get "first_run", to: "users/first_runs#new", as: :first_run

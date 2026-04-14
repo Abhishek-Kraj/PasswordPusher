@@ -83,6 +83,8 @@ gem "apipie-rails", github: "Apipie/apipie-rails", branch: "copilot/fix-router-d
 
 gem "config"
 gem "devise", "~> 5.0"
+gem "omniauth-microsoft_graph", "~> 2.0"
+gem "omniauth-rails_csrf_protection", "~> 1.0"
 gem "foreman"
 gem "lograge"
 gem "mail_form", ">= 1.9.0"

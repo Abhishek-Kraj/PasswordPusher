@@ -272,6 +272,29 @@ signup_email_regexp: '\A[^@\s]+@[^@\s]+\z'
 enable_user_account_emails: false
 
 # =============================================================================
+# SSO / Single Sign-On (Azure AD / Microsoft Entra ID)
+# =============================================================================
+# Enable SSO login via Microsoft Azure AD (Entra ID) using OAuth2/OpenID Connect.
+# Users will see a "Sign in with Microsoft" button on the login page.
+#
+# To configure:
+# 1. Register an app in Azure Portal > App registrations
+# 2. Set redirect URI to: https://YOUR_DOMAIN/users/auth/microsoft_graph/callback
+# 3. Copy the Application (client) ID, Directory (tenant) ID, and create a client secret
+#
+# Environment variable overrides:
+# PWP__SSO__ENABLED='true'
+# PWP__SSO__AZURE_CLIENT_ID='your-client-id'
+# PWP__SSO__AZURE_CLIENT_SECRET='your-client-secret'
+# PWP__SSO__AZURE_TENANT_ID='your-tenant-id'
+
+sso:
+  enabled: <%= ENV.fetch("PWP__SSO__ENABLED", false) %>
+  azure_client_id: <%= ENV.fetch("PWP__SSO__AZURE_CLIENT_ID", "") %>
+  azure_client_secret: <%= ENV.fetch("PWP__SSO__AZURE_CLIENT_SECRET", "") %>
+  azure_tenant_id: <%= ENV.fetch("PWP__SSO__AZURE_TENANT_ID", "common") %>
+
+# =============================================================================
 # Mail (required when logins are enabled)
 # =============================================================================
 
