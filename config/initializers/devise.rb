@@ -274,7 +274,7 @@ Devise.setup do |config|
   config.sign_out_via = :delete
 
   # ==> OmniAuth
-  if Settings.respond_to?(:sso) && Settings.sso&.enabled
+  if Settings.respond_to?(:sso) && ActiveModel::Type::Boolean.new.cast(Settings.sso&.enabled)
     config.omniauth :microsoft_graph,
       Settings.sso.azure_client_id,
       Settings.sso.azure_client_secret,

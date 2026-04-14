@@ -4,7 +4,10 @@ class User < ApplicationRecord
   include Pwpush::TokenAuthentication
   include User::TotpAuthentication
 
-  if defined?(Scimitar) && Settings.respond_to?(:scim) && Settings.scim&.enabled
+  SSO_ENABLED = Settings.respond_to?(:sso) && ActiveModel::Type::Boolean.new.cast(Settings.sso&.enabled)
+  SCIM_ENABLED = Settings.respond_to?(:scim) && ActiveModel::Type::Boolean.new.cast(Settings.scim&.enabled)
+
+  if defined?(Scimitar) && SCIM_ENABLED
     include Scimitar::Resources::Mixin
   end
 
@@ -14,10 +17,12 @@ class User < ApplicationRecord
   # Settings.enable_user_account_emails is true (requires SMTP in config/settings.yml).
   devise_modules = [:database_authenticatable, :registerable, :rememberable, :validatable, :trackable, :timeoutable]
   devise_modules += [:confirmable, :lockable, :recoverable] if Settings.enable_user_account_emails
-  if Settings.respond_to?(:sso) && Settings.sso&.enabled
+  if SSO_ENABLED
     devise_modules += [:omniauthable]
+    devise(*devise_modules, omniauth_providers: [:microsoft_graph])
+  else
+    devise(*devise_modules)
   end
-  devise(*devise_modules, omniauth_providers: Settings.respond_to?(:sso) && Settings.sso&.enabled ? [:microsoft_graph] : [])
 
   has_many :pushes, dependent: :destroy
 

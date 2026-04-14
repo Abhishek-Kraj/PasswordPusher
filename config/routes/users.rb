@@ -11,7 +11,7 @@ devise_controllers = {
   confirmations: "users/confirmations",
   registrations: "users/registrations"
 }
-devise_controllers[:omniauth_callbacks] = "users/omniauth_callbacks" if Settings.respond_to?(:sso) && Settings.sso&.enabled
+devise_controllers[:omniauth_callbacks] = "users/omniauth_callbacks" if Settings.respond_to?(:sso) && ActiveModel::Type::Boolean.new.cast(Settings.sso&.enabled)
 
 devise_for :users, skip: :registrations, controllers: devise_controllers
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-if defined?(Scimitar) && Settings.respond_to?(:scim) && Settings.scim&.enabled
+if defined?(Scimitar) && Settings.respond_to?(:scim) && ActiveModel::Type::Boolean.new.cast(Settings.scim&.enabled)
   Rails.application.config.to_prepare do
     Scimitar.engine_configuration = Scimitar::EngineConfiguration.new(
       token_authenticator: proc { |token, _options|
