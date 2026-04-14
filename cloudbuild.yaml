@@ -5,13 +5,15 @@ steps:
       - '-t'
       - 'europe-west1-docker.pkg.dev/alshaya-titan/pwpush-repo/pwpush-alshaya:latest'
       - '-t'
-      - 'europe-west1-docker.pkg.dev/alshaya-titan/pwpush-repo/pwpush-alshaya:${SHORT_SHA}'
+      - 'europe-west1-docker.pkg.dev/alshaya-titan/pwpush-repo/pwpush-alshaya:${_BUILD_TAG}'
       - '-f'
       - 'containers/docker/Dockerfile'
       - '.'
 images:
   - 'europe-west1-docker.pkg.dev/alshaya-titan/pwpush-repo/pwpush-alshaya:latest'
-  - 'europe-west1-docker.pkg.dev/alshaya-titan/pwpush-repo/pwpush-alshaya:${SHORT_SHA}'
+  - 'europe-west1-docker.pkg.dev/alshaya-titan/pwpush-repo/pwpush-alshaya:${_BUILD_TAG}'
+substitutions:
+  _BUILD_TAG: 'manual'
 options:
   machineType: 'E2_HIGHCPU_8'
 timeout: '1800s'

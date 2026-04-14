@@ -36,7 +36,8 @@ WORKDIR ${APP_ROOT}
 COPY Gemfile Gemfile.lock ./
 
 # Install Ruby dependencies - this layer will be cached unless Gemfile changes
-RUN bundle config set without "${BUNDLE_WITHOUT}" \
+RUN bundle lock --update \
+    && bundle config set without "${BUNDLE_WITHOUT}" \
     && bundle config set deployment "${BUNDLE_DEPLOYMENT}" \
     && bundle install \
     && rm -rf vendor/bundle/ruby/*/cache \
